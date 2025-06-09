@@ -18,12 +18,11 @@ This is my solution to the [File Integrity Checker project](https://roadmap.sh/p
 
 ## Project Requirements
 
-
 - [ ] Accept a directory or a single log file as input.
-- [ ] Utilize a cryptographic hashing algorithm, such as SHA-256, to compute hashes for each log file provided.
-- [ ] On first use, store the computed hashes in a secure location.
-- [ ] For subsequent uses, compare the newly computed hashes against the previously stored ones.
-- [ ] Clearly report any discrepancies found as a result of the hash comparison, indicating possible file tampering.
+- [x] Utilize a cryptographic hashing algorithm, such as SHA-256, to compute hashes for each log file provided.
+- [x] On first use, store the computed hashes in a secure location.
+- [x] For subsequent uses, compare the newly computed hashes against the previously stored ones.
+- [x] Clearly report any discrepancies found as a result of the hash comparison, indicating possible file tampering.
 - [ ] Allow for manual re-initialization of log file integrity.
 - [ ] ./integrity-check init /var/log  # Initializes and stores hashes of all log files in the directory
 - [ ] ./integrity-check check /var/log/syslog > Status: Modified (Hash mismatch) # Optionally report the files where hashes mismatched
