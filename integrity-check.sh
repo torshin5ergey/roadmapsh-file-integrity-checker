@@ -9,12 +9,19 @@ mkdir -p "$HASH_STORE"
 
 show_help() {
 cat << EOF
-integrity-check - verify the integrity of log files to detect tampering
+integrity-check - Verify the integrity of log files to detect tampering
 
-Usage:
-  init [PATH]   create new hash
-  check [PATH]  verify hash
-  update [PATH] update existing hash
+integrity-check.sh [COMMAND] [TARGET] [OPTIONAL_HASH_FILE]
+
+Commands:
+  init      Create new integrity baseline
+  check     Verify against stored baseline
+  update    Update existing baseline
+  help      Show usage information
+
+Arguments:
+  TARGET             Directory or file to monitor
+  OPTIONAL_HASH_FILE Custom hash file location (default: ~/.log-integrity/hashes.sha256)
 EOF
 }
 
@@ -75,7 +82,7 @@ case "$1" in
   fi
 
   IS_ERRORS=0
-  
+
   while IFS= read -r LINE; do
     CUR_FILE_PATH="${LINE##* }" # Keep only path
     # Hash stored but file didn't exists now
@@ -109,7 +116,7 @@ case "$1" in
     exit 1
   fi
   ;;
- 
+
 # update ========================================
   update|-update|--update)
   TARGET="$(realpath "$2")"
@@ -124,12 +131,12 @@ case "$1" in
     echo "Missing hash file. Run 'init' first."
     exit 1
   fi
-  
+
   echo "$HASH_FILE updating..."
 
   IS_UPDATED=0
   TMP_FILE="$(mktemp)"
-  
+
   # Update existing files hash
   while IFS= read -r LINE; do
     CUR_FILE_PATH="${LINE##* }" # Keep only path (remove longest substring)
