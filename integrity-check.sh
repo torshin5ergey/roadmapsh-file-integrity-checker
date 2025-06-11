@@ -20,6 +20,7 @@ EOF
 
 # Router
 case "$1" in
+# init ==========================================
   init|-init|--init)
   echo "init"
   echo $1 $2 $3
@@ -46,6 +47,7 @@ case "$1" in
   echo "$(wc -l < "$HASH_FILE") files monitored."
   ;;
 
+# check =========================================
   check|-check|--check)
   echo "check"
   echo $1 $2 $3
@@ -70,7 +72,7 @@ case "$1" in
   fi
 
   INTEGRITY_ERRORS=0
-
+  
   while IFS= read -r LINE; do
     echo $LINE
     CUR_FILE_PATH="${LINE##* }" # Keep only path
@@ -89,19 +91,32 @@ case "$1" in
   done < "$TMP_FILE" # Read every line in while loop
   rm "$TMP_FILE"
 
+  # Check for new files in directory
+  if [ -d "$TARGET" ]; then
+    while IFS= read -r CUR_FILE_PATH; do
+      if ! grep -qF "$CUR_FILE_PATH" "$HASH_FILE"; then
+        echo "New file: $CUR_FILE_PATH"
+	INTEGRITY_ERRORS=1
+      fi
+    done < <(find "$TARGET" -type f -print)
+  fi
+
   if [ $INTEGRITY_ERRORS -eq 0 ]; then
     echo "Status: Unmodified."
   else
     exit 1
   fi
   ;;
-
+ 
+# update ========================================
   update|-update|--update)
   echo "update"
   ;;
 
+# help ==========================================
   *)
   show_help
   exit 1
   ;;
 esac
+
